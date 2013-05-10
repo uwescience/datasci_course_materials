@@ -28,7 +28,7 @@ using the hard-coded credentials above.
 def twitterreq(url, method, parameters):
   req = oauth.Request.from_consumer_and_token(oauth_consumer,
                                              token=oauth_token,
-                                             http_method=http_method,
+                                             http_method=method,
                                              http_url=url, 
                                              parameters=parameters)
 
@@ -36,7 +36,7 @@ def twitterreq(url, method, parameters):
 
   headers = req.to_header()
 
-  if http_method == "POST":
+  if method == "POST":
     encoded_post_data = req.to_postdata()
   else:
     encoded_post_data = None
@@ -53,7 +53,7 @@ def twitterreq(url, method, parameters):
 def fetchsamples():
   url = "https://stream.twitter.com/1/statuses/sample.json"
   parameters = []
-  response = twitterreq(url, "GET", parameters)
+  response = twitterreq(url, http_method, parameters)
   for line in response:
     print line.strip()
 
