@@ -1,4 +1,4 @@
 ﻿abandon	-2
-ivanov	2
+ivanov	10
 george	1
 wow	-2

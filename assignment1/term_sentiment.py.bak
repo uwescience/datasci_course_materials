@@ -8,7 +8,7 @@ def build_sent_dict(afinnfile_path):
     scores = []
     for i, line in enumerate(afinnfile):
 		term, score = line.split("\t") # each line is tab del
-		scores.append((term, int(score))) # convert the score to int
+		scores.append((term.encode('utf-8'), int(score))) # convert the score to int
     return scores
 
 def main():
