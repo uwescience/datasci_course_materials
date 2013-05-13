@@ -21,7 +21,7 @@ http_handler = urllib.HTTPHandler(debuglevel=_debug)
 https_handler = urllib.HTTPSHandler(debuglevel=_debug)
 
 
-def twitterreq(url, method, parameters):
+def twitterreq(url, http_method, parameters):
     '''
     Construct, sign, and open a twitter request
     using the hard-coded credentials above.
