@@ -1,10 +1,13 @@
 import sys
 
+
 def hw():
     print 'Hello, world!'
 
+
 def lines(fp):
     print str(len(fp.readlines()))
+
 
 def main():
     sent_file = open(sys.argv[1])
