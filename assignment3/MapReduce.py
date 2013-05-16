@@ -9,20 +9,18 @@ class MapReduce:
         self.intermediate.setdefault(key, [])
         self.intermediate[key].append(value)
 
-    def emit(self, value):
-        self.result.append(value) 
+    def emit(self, key, value):
+        self.result.append((key,value)) 
 
     def execute(self, data, mapper, reducer):
         for line in data:
-            mapper(self, line)
+            record = json.loads(line)
+            mapper(record[0], record[1])
 
         for key in self.intermediate:
-            reducer(self, key, self.intermediate[key])
+            reducer(key, self.intermediate[key])
 
-        jenc = json.JSONEncoder(encoding='latin-1')
+        #jenc = json.JSONEncoder(encoding='latin-1')
+        jenc = json.JSONEncoder()
         for item in self.result:
             print jenc.encode(item)
-
-def execute(data, mapper, reducer):
-    mr = MapReduce()
-    mr.execute(data, mapper, reducer)
