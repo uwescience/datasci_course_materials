@@ -9,13 +9,13 @@ class MapReduce:
         self.intermediate.setdefault(key, [])
         self.intermediate[key].append(value)
 
-    def emit(self, key, value):
-        self.result.append((key,value)) 
+    def emit(self, value):
+        self.result.append(value) 
 
     def execute(self, data, mapper, reducer):
         for line in data:
             record = json.loads(line)
-            mapper(record[0], record[1])
+            mapper(record)
 
         for key in self.intermediate:
             reducer(key, self.intermediate[key])
