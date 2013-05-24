@@ -10,7 +10,7 @@ example.pig uses the function RDFSplit3(...) which is defined in myudfs.jar:
 OPTION 1: Do nothing.  example.pig is already configured to read
 myudfs.jar from S3, through the line:
 
-register s3n://uw-cse344-11au-code/myudfs.jar
+register s3n://uw-cse344-code/myudfs.jar
 
 
 OPTION 2:  do-it-yourself; run this on your local machine:
