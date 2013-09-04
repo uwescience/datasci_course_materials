@@ -4,7 +4,7 @@ abandons	-2
 abducted	-2
 abduction	-2
 abductions	-2
-abhor	-3
+abhor	-4
 abhorred	-3
 abhorrent	-3
 abhors	-3
