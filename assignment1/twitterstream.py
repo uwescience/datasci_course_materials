@@ -1,7 +1,7 @@
 import oauth2 as oauth
 import urllib2 as urllib
 
-# See Assignment 1 instructions or README for how to get these credentials
+# See assignment1.html instructions or README for how to get these credentials
 
 api_key = "<Enter api key>"
 api_secret = "<Enter api secret>"
