@@ -131,9 +131,16 @@ access_token_secret = "&lt;Enter your access token secret here&gt;"
 
 This command pipes the output to a file.  Stop the program with Ctrl-C, but wait at least <strong>3 minutes</strong> for data to accumulate. Keep the file output.txt for the duration of the assignment; we will be reusing it in later problems.  Don't use someone else's file; we will check for uniqueness in other parts of the assignment.
 </li>
+
+<li>If you wish, modify the file to use the <a href="https://dev.twitter.com/docs/api/1.1/get/search/tweets">twitter search API</a> to search for specific terms.  For example, to search for the term &quot;microsoft&quot;, you can pass the following url to the twitterreq function:
+<pre>
+https://api.twitter.com/1.1/search/tweets.json?q=microsoft
+</pre>
+</li>
+
 </ol>
 
-<p class="turnin">What to turn in: The first 20 lines of your file. You can save the first 20 lines to a file <code>problem_1_submission.txt</code> by using the following command:
+<p class="turnin">What to turn in: The first 20 lines of the twitter data you downloaded from the web. You can save the first 20 lines to a file <code>problem_1_submission.txt</code> by using the following command:
 <pre>$ head -n 20 output.txt > problem_1_submission.txt</pre>
 </p>
 
