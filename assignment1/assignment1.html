@@ -10,7 +10,7 @@ font-size:120%;
 color:purple;
 }
 p {
-padding-bottom:0.5em;
+padding-bottom:0.25em;
 }
 h3 {
 padding-top:2em;
@@ -63,7 +63,7 @@ href="http://www.ccs.neu.edu/home/amislove/twittermood/"><strong>have an excelle
 
 <p>If you are new to Python, you may find it valuable to work through the <a href="http://www.codecademy.com/tracks/python">codeacademy Python tutorials</a>. Focus on tutorials 1-9, plus tutorial 12 on File IO. In addition, many students have recommended <a href="https://developers.google.com/edu/python/">Google's Python class</a>.</p>
 
-<p>You will need to establish a Python programming environment to complete this assignment.  You can install Python yourself by<a href="http://www.python.org/download/">downloading it from the Python website</a>, or can use the <a href="https://spark-public.s3.amazonaws.com/datasci/Coursera-Data-Science-Ubuntu.ova">class virtual machine</a>.
+<p>You will need to establish a Python programming environment to complete this assignment. You can install Python yourself by <a href="http://www.python.org/download/">downloading it from the Python website</a>, or can use the <a href="https://spark-public.s3.amazonaws.com/datasci/Coursera-Data-Science-Ubuntu.ova">class virtual machine</a>.
 </p>
 
 <h4>Unicode strings</h4>
@@ -88,55 +88,7 @@ print encoded_string
 
 <h4>Getting Started</h4>
 
-<p>There's a <a href="https://class.coursera.org/datasci-002/lecture/55">video walkthrough of Problem 0 and Problem 1</a> available.  If you are brand new to Python, or if you have trouble getting the VM set up, or if the Twitter API is causing you trouble, this video may help.</p>
-
 <p>Once again: If you are new to Python, many students have recommended <a href="https://developers.google.com/edu/python/">Google's Python class.</a></p>
-
-
-<h3>Problem 0: Query Twitter with Python</h3>
-
-
-<p>If you are using the class virtual machine, run the VM, open a terminal window, and <a href="https://class.coursera.org/datasci-002/wiki/GithubInstructions">use git to make sure you have the latest class materials</a>.</p>
-
-<p>To edit the file in linux, you can use vi, emacs, gedit or any other editor.</p>
-
-<p>Use the <a href="http://docs.python.org/2/library/urllib.html">urllib</a> and <a href="http://docs.python.org/2/library/json.html">json</a> libraries in python to access the basic twitter search API and return JSON data. </p>
-
-<p>To retrieve recent tweets associated with the term “microsoft,” you use this url:</p>
-
-<pre>http://search.twitter.com/search.json?q=microsoft</pre>
-
-<p>To access this url in Python and parse the response, you can use the following snippet:</p>
-
-<pre>
-import urllib
-import json
-
-response = urllib.urlopen("http://search.twitter.com/search.json?q=microsoft")
-print json.load(response)
-</pre>
-
-<p>The format of the result is <em>JSON</em>, which stands for JavaScript Object Notation. It is a simple format for representing nested structures of data --- lists of
-lists of dictionaries of lists of .... you get the idea.</p>
-
-<p>As you might imagine, it is fairly straightforward to convert JSON data into a Python data structure. Indeed, there is a convenient library to do so, called json, which we will use.</p>
-
-<p>Twitter provides only <a href="https://dev.twitter.com/docs/platform-objects/tweets"><strong>partial documentation for understanding this data format</strong></a>, but it's not too difficult to deduce the structure by direct inspection.</p>
-
-<p>Using this library, the json data is parsed and converted to a Python dictionary representing the entire result set. (If needed, take a moment to <strong><a href="http://docs.python.org/2/library/stdtypes.html#typesmapping">read the documentation for Python dictionaries</a></strong>).  The &quot;results&quot; key of this dictionary corresponds holds the actual tweets; each tweet is itself another dictionary.</p>
-
-<p>Now that you are equipped to work with Twitter data, write a simple program <code>print.py</code> that prints out the text of each tweet in the result.</p>
-
-<p>Then, generalize your program to fetch and print the first 10 pages of results. To return a different page of results, you can pass a page parameter to in the url request, like this:</li>
-<pre>http://search.twitter.com/search.json?q=microsoft&page=2</pre>
-
-<p>Your program <code>print.py</code> should be executable from the command line by typing:</p>
-
-<pre>$ python print.py</pre>
-
-<p>When executed, the script should print each tweet on its own line to stdout.</p>
-
-<p class="turnin">What to turn in: Nothing. This is a warmup exercise.</p>
 
 
 <h3>Problem 1: Get Twitter Data</h3>
@@ -238,7 +190,7 @@ print scores.items() # Print every (term, score) pair in the dictionary
 
 <p>Your script should print output to stdout.  Each line of output should contain a term, followed by a space, followed by the sentiment.  That is, each line should be in the format <code>&lt;term:string&gt; &lt;sentiment:float&gt;</code></p>
 
-<p>For example, if you have the pair <code>(“foo”, 103.256)</code> in Python, it should appear in the output as:
+<p>For example, if you have the pair <code>("foo", 103.256)</code> in Python, it should appear in the output as:
 
 <pre>foo 103.256</pre>
 </p>
@@ -309,7 +261,7 @@ originates from.</p>
 
 <p>You can ignore any tweets for which you cannot assign a location in the United States.</p>
 
-<p>The live stream has a slightly different format from the response to the query you used in Problem 0. In this file, each line is a Tweet object, as<a
+<p>In this file, each line is a Tweet object, as<a
 href="https://dev.twitter.com/docs/platform-objects/tweets">described in the twitter documentation</a>.</p>
 
 <p>Note: Not every tweet will have a <code>text</code> field --- again, real data is dirty!  Be prepared to debug, and feel free to throw out tweets that your code can't handle to get
