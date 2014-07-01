@@ -148,9 +148,9 @@ https://api.twitter.com/1.1/search/tweets.json?q=microsoft
 
 <p>For this part, you will compute the sentiment of each tweet based on the sentiment scores of the terms in the tweet. The sentiment of a tweet is equivalent to the sum of the sentiment scores for each term in the tweet.</p>
 
-<p>You are provided with a skeleton file, tweet_sentiment.py, which can be executed using the following command:</p>
+<p>You are provided with a skeleton file <code>tweet_sentiment.py</code> which accepts two arguments on the command line: a <em>sentiment file</em> and a tweet file like the one you generated in Problem 1. You can run the skeleton program like this:</p>
 
-<pre>$ python tweet_sentiment.py &lt;sentiment_file&gt; &lt;tweet_file&gt;</pre>
+<pre>$ python tweet_sentiment.py AFINN-111.txt output.txt</pre>
 
 <p>The file AFINN-111.txt contains a list of pre-computed sentiment scores. Each line in the file contains a word or phrase followed by a sentiment score. Each word or phrase that is found in a tweet but not found in AFINN-111.txt should be given a sentiment score of 0. See the file AFINN-README.txt for more information.</p>
 
