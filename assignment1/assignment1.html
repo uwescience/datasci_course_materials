@@ -125,7 +125,7 @@ access_token_secret = "&lt;Enter your access token secret here&gt;"
 </pre>
 </li>
 
-<li>Run the following and make sure you see data flowing and that no errors occur. 
+<li>Run the following and make sure you see data flowing and that no errors occur.
 
 <pre>$ python twitterstream.py > output.txt</pre>
 
@@ -139,6 +139,7 @@ https://api.twitter.com/1.1/search/tweets.json?q=microsoft
 </li>
 
 </ol>
+
 
 <p class="turnin">What to turn in: The first 20 lines of the twitter data you downloaded from the web. You can save the first 20 lines to a file <code>problem_1_submission.txt</code> by using the following command:
 <pre>$ head -n 20 output.txt > problem_1_submission.txt</pre>
@@ -167,17 +168,31 @@ print scores.items() # Print every (term, score) pair in the dictionary
 </pre>
 </p>  
 
-<p>We will run your program on a tweet file formatted the same way as the livestream data.</p>
+<p>The data in the tweet file you generated in Problem 1 is represented as <em>JSON</em>, which stands for JavaScript Object Notation. It is a simple format for representing nested structures of data --- lists of lists of dictionaries of lists of .... you get the idea.</p>
+
+<p>Each line of <code>output.txt</code> represents a <a href="https://dev.twitter.com/docs/streaming-apis/messages">streaming message</a>.  Most, but not all, will be <a href="https://dev.twitter.com/docs/platform-objects/tweets">tweets</a>. (The skeleton program will tell you how many lines are in the file.)</p>
+
+<p>It is straightforward to convert a JSON string into a Python data structure; there is a library to do so called <code>json</code>.</p>
+
+<p>To use this library, add the following to the top of <code>tweet_sentiment.py<code></p>
+
+<pre>import json</pre>
+
+<p>Then, to parse the data in <code>output.txt</code>, you want to apply the function <code>json.loads</code> to every line in the file.</p>
+
+<p>This function will parse the json data and return a python data stucture; in this case, it returns a dictionary.  If needed, take a moment to <strong><a href="http://docs.python.org/2/library/stdtypes.html#typesmapping">read the documentation for Python dictionaries</a></strong>.</p>
+
+<p>You can read the <a href="https://dev.twitter.com/docs/platform-objects/tweets">Twitter documentation</a> to understand what information each tweet contains and how to access it, but it's not too difficult to deduce the structure by direct inspection.</p>
 
 <p>Your script should print to stdout the sentiment of each tweet in the file, one numeric sentiment score per line.  The first score should correspond to the first tweet, the second score should correspond to the second tweet, and so on.  If you sort the scores, they won't match up.  If you sort the tweets, they won't match up.  If you put the tweets into a dictionary, the order will not be preserved.   Once again: <strong class="important">The nth line of the file you submit should contain only a single number that represents the score of the nth tweet in the input file!</strong></p>
 
-<p class="important">NOTE: You must provide a score for <strong>every</strong> tweet in the sample file, even if that score is zero.  You can assume the sample file will only include English tweets.</p>
+<p class="important">NOTE: You must provide a score for <strong>every</strong> tweet in the sample file, even if that score is zero.  You can assume the sample file will only include English tweets and no other types of streaming messages.</p>
 
-<p>Hint: The json.loads function parses a string to JSON.</p>
+<p>To grade your submission, we will run your program on a tweet file formatted the same way as the <code>output.txt</code> file you generated in Problem 1.</p>
 
-<p>Hint:  This is real-world data, and it can be messy!   Refer to the<a href="https://dev.twitter.com/docs/platform-objects/tweets">twitter documentation</a> to understand more about the data structure you are working with.  Don't get discouraged, and ask for help on the forums if you get stuck.</p>
+<p>Hint: This is real-world data, and it can be messy!   Refer to the<a href="https://dev.twitter.com/docs/platform-objects/tweets">twitter documentation</a> to understand more about the data structure you are working with.  Don't get discouraged, and ask for help on the forums if you get stuck!</p>
 
-<p class="turnin">What to turn in: The file <code>tweet_sentiment.py</code></p>
+<p class="turnin">What to turn in: The file <code>tweet_sentiment.py</code> after you've verified that it returns the correct answers.</p>
 
 <h3>Problem 3: Derive the sentiment of new terms</h3>
 
