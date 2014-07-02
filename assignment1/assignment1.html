@@ -270,9 +270,10 @@ as a string.</p>
 
 <p>There are different ways you might assign a location to a tweet.  Here are three:
 <ul>
-<li>Use the <code>coordinates</code> field, if it exists, to geocode the tweet.  This method gives the most reliable location information, but unfortunately not very many tweets contain this field and you have to figure out some way of translating the coordinates into a state</li>
 
-<li>Use the <code>place</code> field.  This field is hand-entered by the twitter user and may not always be present, and will not typically contain a state. It might contain a city, though, which you could use to determine the state.</li>
+<li>Use the <code>coordinates</code> field (a part of the <code>place</code> object, if it exists, to geocode the tweet.  This method gives the most reliable location information, but unfortunately this field is not always available and you must figure out some way of translating the coordinates into a state.</li>
+
+<li>Use the other metadata in the <code>place</code> field.  Much of this information is hand-entered by the twitter user and may not always be present or reliable, and may not typically contain a state name.</li>
 
 <li>Use the <code>user</code> field to determine the twitter user's home city and state.  This location does not necessarily correspond to the location where the tweet was posted, but it's reasonable to use it as a proxy.</li>
 </ul>
