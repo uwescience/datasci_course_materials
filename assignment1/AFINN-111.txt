@@ -498,7 +498,6 @@ convinced	1
 convinces	1
 convivial	2
 cool	1
-cool stuff	3
 cornered	-2
 corpse	-1
 costly	-2
