@@ -1,0 +1,7 @@
+## files to ignore in Status
+*.Rhistory
+*.txt
+*.py
+*.pdf
+*.docx
+*.zip
