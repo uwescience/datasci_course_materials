@@ -1,0 +1,46 @@
+import sys
+import re
+
+import json
+
+def getState(tweet):
+#    import pdb;pdb.set_trace()
+    print "====================="
+    try:
+      print tweet['place']['full_name']
+#print json.loads(tweet['place'])['full_name']
+    except:
+      pass
+    try:
+      print tweet['user']['location'].split(' ')[1].trim()
+#     print json.loads(tweet['user'])['location']
+    except:
+      pass
+
+def main():
+    sent_file = open(sys.argv[1])
+    tweet_file = open(sys.argv[2])
+    scores = {} # initialize an empty dictionary
+    for line in sent_file:
+        term, score  = line.split("\t")  # The file is tab-delimited. "\t" means "tab character"
+        scores[term] = int(score)  # Convert the score to an integer.
+#import pdb;pdb.set_trace()
+    wordlist = {}
+    for line in tweet_file:
+      try:
+          tweet = json.loads(line)['text']
+      except:
+#print 0
+          continue
+      getState(json.loads(line))
+      tweet = re.findall('[\w]+',tweet)
+      score = 0
+      for word in tweet:
+          if word not in wordlist:
+              wordlist[word]=[1,1]
+          try:
+              score += scores[word]
+          except:
+              pass
+if __name__ == '__main__':
+    main()
