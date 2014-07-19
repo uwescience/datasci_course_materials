@@ -69,7 +69,7 @@ relational algebra expression.</p>
 &sigma;<sub>10398_txt_earn</sub>(frequency)
 </p>
 
-<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned.  In your browser, enter the number of records returned.
+<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned. Save that value in a .txt file . You can name the file anything. On the assignment page, upload the file as your answer.
 </p>
 
 
@@ -81,7 +81,7 @@ relational algebra expression.</p>
 &pi;<sub>term</sub>(&sigma;<sub>docid=10398_txt_earn and count=1</sub>(frequency))
 </p>
 
-<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned as described above.  On the assignment page, enter the number of records returned.</p>
+<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned. Save that value in a .txt file . You can name the file anything. On the assignment page, upload the file as your answer.</p>
 
 <p><strong>(c) union:</strong> Write a SQL statement that is equivalent to the following relational algebra expression. (Hint: you can use the UNION keyword in SQL)</p> 
 
@@ -89,18 +89,18 @@ relational algebra expression.</p>
 &pi;<sub>term</sub>(&sigma;<sub>docid=10398_txt_earn and count=1</sub>(frequency)) U &pi;<sub>term</sub>(&sigma;<sub>docid=925_txt_trade and count=1</sub>(frequency))
 </p>
 
-<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned as described above.  On the assignment page, enter the number of records returned.</p>
+<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned. Save that value in a .txt file . You can name the file anything. On the assignment page, upload the file as your answer.</p>
 
 <p><strong>(d) count:</strong> Write a SQL statement to count the number of documents
 containing the word "parliament"</p>
 
-<p class="turnin">What to turn in: Run your query against your local database and determine the count returned as described above.  On the assignment page, enter the number of records returned.</p>
+<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned. Save that value in a .txt file . You can name the file anything. On the assignment page, upload the file as your answer.</p>
 
 <p><strong>(e) big documents</strong> Write a SQL statement to find all documents that have
 more than 300 total terms, including duplicate terms.  (Hint: You can use the HAVING clause, or you can use a nested query.  Another hint: Remember that the count column contains the term frequencies, and you want to consider duplicates.) (docid, term_count)
 </p>
 
-<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned as described above.  On the assignment page, enter the number of records returned.</p>
+<p class="turnin">What to turn in: Run your query against your local database and determine the number of records returned. Save that value in a .txt file . You can name the file anything. On the assignment page, upload the file as your answer.</p>
 
 
 <p><strong>(f) two words:</strong> Write a SQL statement to count the number of unique documents that contain both the word 'transactions' and the word 'world'. </p>
@@ -226,7 +226,7 @@ The matrix A and matrix B are both square matrices with 5 rows and 5 columns eac
 class lecture for hints.</p>
 
 
-<p class="turnin">What to turn in: On the assignment page, enter the value of the cell (2,3)</p>
+<p class="turnin">What to turn in: Save the value of cell (2,3) in a .txt file. You can name the file anything you like. On the assignment page, upload the file contatining only the value of the cell (2,3)</p>
 
 If you're wondering why this might be a good idea, consider that advanced databases execute queries in parallel automatically.   So it can be quite efficient to process a very large sparse matrix --- millions of rows or columns --- in a database.
 
@@ -255,7 +255,7 @@ The result is a square document-document matrix, where each cell represents the 
 
 <p><strong>(h) similarity matrix:</strong> Write a query to compute the similarity matrix <em>DD<sup>T</sup></em>. (Hint: The transpose is trivial -- just join on columns to columns instead of columns to rows.)  The query could take some time to run if you compute the entire result.  But notice that you don't need to compute the similarity of both (doc1, doc2) and (doc2, doc1) -- they are the same, since similarity is symmetric.  If you wish, you can avoid this wasted work by adding a condition of the form a.docid &lt; b.docid to your query.  (But the query still won't return immediately if you try to compute every result -- don't expect otherwise.)</p>
 
-<p class="turnin">What to turn in: On the assignment page, enter the similarity of the two documents '10080_txt_crude' and '17035_txt_earn'.</p>
+<p class="turnin">What to turn in: On the assignment page, enter a .txt file containing the similarity value of the two documents '10080_txt_crude' and '17035_txt_earn'. You can name the file anything you like.</p>
 
 <p>You can also use this similarity metric to implement some primitive search capabilities.  Consider a keyword query that you might type into Google: It's a bag of words, just like a document (typically a keyword query will have far fewer terms than a document, but that's ok).</p>
 
