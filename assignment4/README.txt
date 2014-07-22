@@ -30,7 +30,7 @@ Master Node (see hw6-awsusage.html).
 STEP2
 
 Start an AWS Cluster (see hw6-awsusage.html), start pig interactively,
-and cut and paste the content of example.pig.
+and cut and paste the content of example.pig.  I prefer to do this line by line
 
 
 Note: The program may appear to hang with a 0% completion time... go check the job tracker. Scroll down. You should see a MapReduce job running with some non-zero progress. 
