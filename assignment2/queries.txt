@@ -1,0 +1,36 @@
+a. select count(1) FROM frequency where docid='10398_txt_earn'
+b. select count(1) FROM frequency where docid='10398_txt_earn' and count =1
+c. select count(1) from (SELECT term FROM frequency where docid='10398_txt_earn' and count = 1 
+	union 
+	SELECT term FROM frequency where docid='925_txt_trade' and count = 1)
+d. select count(1) FROM frequency where term = 'parliament'
+e. select count(1) from(select docid, sum(count) as t_ct from frequency group by docid having t_ct > 300);
+f. select count(1) from frequency t, frequency s where t.term = 'transactions' and s.term ='world' and t.docid= s.docid;
+g. select val from
+	(
+	select a.row_num r, b.col_num c, sum(a.value * b.value) as val from a, b where a.col_num = b.row_num group by r,c having r=2 and c=3
+	);
+h. select sum(f1.count * f2.count) from frequency f1, frequency f2 where f1.term = f2.term and f1.docid = '10080_txt_crude' and f2.docid = '17035_txt_earn';
+i. select max(sim_value)
+	from (
+		 select A.docid as docid_a ,B.docid as docid_b,
+		 sum(A.count * B.count) as sim_value
+		 from
+		 (
+		 select * from frequency
+		 union
+		 select 'q' as docid, 'washington' as term, 1 as count 
+		 union
+		 select 'q' as docid, 'taxes' as term, 1 as count
+		 union 
+		 select 'q' as docid, 'treasury' as term, 1 as count
+		 ) as A join 
+		 (
+		 select 'q' as docid, 'washington' as term, 1 as count 
+		 union
+		 select 'q' as docid, 'taxes' as term, 1 as count
+		 union 
+		 select 'q' as docid, 'treasury' as term, 1 as count
+		 ) as B on A.term = B.term
+		 group by docid_a,docid_b
+		 );
