@@ -1,6 +1,5 @@
-Data Science Short Course
+datasci_course_materials
 ========================
 
-Public repository for an accelerated short course based on the [Introduction to Data Science](https://www.coursera.org/course/datasci) coursera course.
+Public repository for course materials for the Spring 2013 and 2014 sessions of Introduction to Data Science, an online coursera course.
 
-Read the [syllabus](syllabus.md)
