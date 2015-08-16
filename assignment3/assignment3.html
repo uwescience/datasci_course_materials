@@ -1,0 +1,216 @@
+<html>
+<head>
+
+<title>Assignment 3 - MapReduce</title></head>
+
+<body class="c4">
+
+
+<p class="c2"><span>In this assignment, you will be designing and implementing MapReduce algorithms for a variety of common data processing tasks. &nbsp;</span></p><p class="c1"><span></span></p>
+
+
+<p class="c2">The MapReduce programming model (and a corresponding system) was proposed in a 2004 paper from a team at Google as a simpler abstraction for processing very large datasets in parallel. &nbsp;The goal of this assignment is to give you experience &ldquo;thinking in MapReduce.&rdquo; &nbsp;We will be using small datasets that you can inspect directly to determine the correctness of your results and to internalize how MapReduce works. &nbsp;In the next assignment, you will have the opportunity to use a MapReduce-based system to process the very large datasets for which it was designed.</p>
+
+<p class="c2">As always, the first thing to do is to update your provided course materials using <code>git pull</code>. These resources may have changed since the last time you interacted with the datasci_course_materials repository.<span class="c5">(Review the <a href="https://class.coursera.org/datasci-001/wiki/view?page=GithubInstructions">Github Instructions</a> if necessary).</p><p class="c2"><span>Next, review the lectures to make sure you understand the programming model.</p>
+
+<h1 class="c2">Python MapReduce Framework</h1>
+
+<p class="c2">You will be provided with a python library called MapReduce.py that implements the MapReduce programming model. The framework faithfully implements the MapReduce programming model, but it executes entirely on a single machine -- it does not involve parallel computation. </span></p>
+
+
+<p class="c2">Here is the word count example discussed in class implemented as a MapReduce program using the framework:</p>
+
+
+<pre>
+# Part 1
+mr = MapReduce.MapReduce()
+
+# Part 2
+def mapper(record):
+    # key: document identifier
+    # value: document contents
+    key = record[0]
+    value = record[1]
+    words = value.split()
+    for w in words:
+      mr.emit_intermediate(w, 1)
+
+# Part 3
+def reducer(key, list_of_values):
+    # key: word
+    # value: list of occurrence counts
+    total = 0
+    for v in list_of_values:
+      total += v
+    mr.emit((key, total))
+
+# Part 4
+inputdata = open(sys.argv[1])
+mr.execute(inputdata, mapper, reducer)
+</pre>
+
+
+<p class="c2"><span>In Part 1, we create a MapReduce object that is used to pass data between the map function and the reduce function; you won’t need to use this object directly.</p>
+
+<p class="c2">In Part 2, the mapper function tokenizes each document and emits a key-value pair. The key is a word formatted as a string and the value is the integer 1 to indicate an occurrence of word.</p>
+
+<p class="c2">In Part 3, the reducer function sums up the list of occurrence counts and emits a count for word. Since the mapper function emits the integer 1 for each word, each element in the list_of_values is the integer 1. </p>
+
+<p class="c2">The list of occurrence counts is summed and a (word, total) tuple is emitted where word is a string and total is an integer.</p>
+
+<p class="c2">In Part 4, the code loads the json file and executes the MapReduce query which prints the result to stdout.</p>
+
+<h1 class="c2">Submission Details</h1>
+
+<p class="c2">For each problem, you will turn in a python script, similar to wordcount.py, that solves the problem using the supplied MapReduce framework.</p>
+
+<p class="c2">When testing, make sure MapReduce.py is in the same directory as the solution script.</p>
+
+<p class="c1">Solution data will be provided for each problem in the solutions folder.</p>
+
+<p>Your python submission scripts are required to have a mapper function that accepts at least 1 argument and a reducer function that accepts at least 2 arguments. Your submission is also required to have a global variable named mr which points to a MapReduce object. If you solve the problems by simply replacing the mapper and reducer functions in wordcount.py, then this condition will be satisfied automatically.</p>
+
+<h1 class="c2">Problem 1</span></h1>
+
+<p class="c2">Create an Inverted index. Given a set of documents, an inverted index is a dictionary where each word is associated with a list of the document identifiers in which that word appears.</p>
+
+<h2 class="c2">Mapper Input</h2>
+
+<p class="c2"><span>The input is a 2 element list: <code>[document_id, text]</code>, where <code>document_id</code> is a string representing a document identifier and <code>text</code> is a string representing the text of the document.  The document text may have words in upper or lower case and may contain punctuation. You should treat each token as if it was a valid word; that is, you can just use value.split() to tokenize the string.</span></p>
+
+<h2 class="c2">Reducer Output</h2>
+
+<p class="c2"><span>The output should be a (word, document ID list) tuple where word is a String and document ID list is a list of Strings.</span></p><p class="c1"><span></span></p><p class="c2"><span>You can test your solution to this problem using books.json:</span></p><p class="c2"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;python inverted_index.py books.json</span></p><p class="c1"><span></span></p><p class="c2"><span>You can verify your solution against inverted_index.json.</span></p>
+
+<h1 class="c2"><a name="h.h9ky98lavkt4"></a><span>Problem 2</span></h1>
+
+<p class="c2"><span>Implement a relational join as a MapReduce query</span></p>
+
+<p class="c2"><span>Consider the following query: </span></p>
+
+<pre>
+SELECT * 
+FROM Orders, LineItem 
+WHERE Order.order_id = LineItem.order_id
+</pre>
+
+
+<p class="c2">Your MapReduce query should produce the same result as this SQL query executed against an appropriate database. </p>
+
+<p>You can consider the two input tables, Order and LineItem, as one big concatenated bag of records that will be processed by the map function record by record.</p>
+
+
+<h2 class="c2">Map Input</h2>
+
+
+<p class="c2"><span>Each input record is a list of strings representing a tuple in the database. Each list element corresponds to a different attribute of the table</p>
+
+<p class="c2"><span>The first item (index 0) in each record is a string that identifies the table the record originates from. This field has two possible values:</span></p>
+
+<ul>
+<li>&quot;line_item&quot; indicates that the record is a line item.</li>
+<li>&quot;order&quot; indicates that the record is an order.</li>
+</ul>
+<p>The second element (index 1) in each record is the order_id.</p>
+
+<p class="c2"><span>LineItem records have 17 attributes including the identifier string.</span></p>
+
+<p class="c2"><span>Order records have 10 elements including the identifier string.</span></p>
+
+<h2 class="c2"><a name="h.1jod59f5lohi"></a><span>Reduce Output</span></h2>
+
+<p class="c2"><span>The output should be a joined record: a single list of length 27 that contains the attributes from the order record followed by the fields from the line item record. Each list element should be a string.</span></p>
+
+<p class="c2"><span>You can test your solution to this problem using records.json:</span></p>
+
+<pre>
+$ python join.py records.json
+</pre>
+
+<p class="c2"><span>You can can compare your solution with join.json.</span></p>
+
+<h1 class="c2">Problem 3</h1>
+
+<p class="c2"><span>Consider a simple social network dataset consisting of a set of key-value pairs <code>(person, friend)</code> representing a friend relationship between two people. Describe a MapReduce algorithm to count the number of friends for each person.</span></p>
+
+<h2 class="c2"><a name="h.6bmaxr6905fq"></a><span>Map Input</span></h2>
+
+<p class="c2">Each input record is a 2 element list <code>[personA, personB]</code> where personA is a string representing the name of a person and personB is a string representing the name of one of personA's friends. Note that it may or may not be the case that the personA is a friend of personB.</p>
+
+<h2 class="c2"><a name="h.f3410fx887ut"></a><span>Reduce Output</span></h2>
+
+<p class="c2"><span>The output should be a pair <code>(person, friend_count)</code> where person is a string and friend_count is an integer indicating the number of friends associated with person.</span></p>
+
+<p class="c2"><span>You can test your solution to this problem using friends.json:</span></p>
+
+<pre>
+$ python friend_count.py friends.json
+</pre>
+
+<p class="c2"><span>You can verify your solution by comparing your result with the file friend_count.json.</span></p>
+
+<h1 class="c2">Problem 4</h1>
+
+<p class="c2"><span>The relationship &quot;friend&quot; is often symmetric, meaning that if I am your friend, you are my friend. Implement a MapReduce algorithm to check whether this property holds. Generate a list of all non-symmetric friend relationships.</span></p>
+
+<h2 class="c2"><a name="h.40menlv78i9q"></a><span>Map Input</span></h2>
+
+<p class="c2">Each input record is a 2 element list <code>[personA, personB]</code> where personA is a string representing the name of a person and personB is a string representing the name of one of personA's friends. Note that it may or may not be the case that the personA is a friend of personB.</p>
+
+<h2 class="c2"><a name="h.atam3upnj7wp"></a><span>Reduce Output</span></h2>
+
+<p class="c2"><span>The output should be all pairs (friend, person) such that (person, friend) appears in the dataset but (friend, person) does not.</p>
+
+<p class="c2"><span>You can test your solution to this problem using friends.json:</span></p>
+
+<pre>
+$ python asymmetric_friendships.py friends.json
+</pre>
+
+<p class="c2"><span>You can verify your solution by comparing your result with the file asymmetric_friendships.json.</span></p>
+
+<h1 class="c2">Problem 5</span></h1>
+
+<p class="c2"><span>Consider a set of key-value pairs where each key is sequence id and each value is a string of nucleotides, e.g., GCTTCCGAAATGCTCGAA....</span></p>
+
+<p class="c2"><span>Write a MapReduce query to remove the last 10 characters from each string of nucleotides, then remove any duplicates generated.</p>
+
+<h2 class="c2">Map Input</h2>
+
+<p class="c2"><span>Each input record is a 2 element list <code>[sequence id, nucleotides]</code> where sequence id is a string representing a unique identifier for the sequence and nucleotides is a string representing a sequence of nucleotides</span></p>
+
+<h2 class="c2">Reduce Output</h2>
+
+<p class="c2"><span>The output from the reduce function should be the unique trimmed nucleotide strings.</span></p>
+
+<p class="c2"><span>You can test your solution to this problem using dna.json:</span></p>
+
+<pre>
+$ python unique_trims.py dna.json
+</pre>
+
+<p class="c2"><span>You can verify your solution by comparing your result with the file unique_trims.json.</span></p>
+
+<h1 class="c2">Problem 6</h1>
+
+<p class="c2"><span>Assume you have two matrices A and B in a sparse matrix format, where each record is of the form i, j, value. Design a MapReduce algorithm to compute the matrix multiplication A x B</span></p>
+
+<h2 class="c2"><a name="h.aqh2zputdew"></a><span>Map Input</span></h2>
+
+<p class="c2"><span>The input to the map function will be a row of a matrix represented as a list.  Each list will be of the form <code>[matrix, i, j, value]</code> where matrix is a string and i, j, and value are integers.</span></p>
+
+<p class="c2"><span>The first item, matrix, is a string that identifies which matrix the record originates from. This field has two possible values: &quot;a&quot; indicates that the record is from matrix A and &quot;b&quot; indicates that the record is from matrix B</span></p>
+
+<h2 class="c2">Reduce Output</h2>
+
+<p class="c2"><span>The output from the reduce function will also be a row of the result matrix represented as a tuple.   Each tuple will be of the form (i, j, value) where each element is an integer.</span></p>
+
+<p class="c2"><span>You can test your solution to this problem using matrix.json:</span></p>
+
+<pre>$ python multiply.py matrix.json</pre>
+
+<p class="c2"><span>You can verify your solution by comparing your result with the file multiply.json.</span></p>
+
+</body>
+
+</html>
