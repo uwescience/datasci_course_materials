@@ -73,3 +73,10 @@ print(newsvmcorrect)
 
 # q15 
 for (v in names(seaflow)) print(paste(v, length(table(seaflow[[v]])))) # fsc_big
+
+# extra: distribution of the mean of training$time for 100 samples
+getTrainingMeans <- function(x, n=1000) {
+  sapply(1:n, function(y) mean(x[sample(seq_along(x),round(length(x)/2))]))
+}
+plot(density(getTrainingMeans(seaflow$time, 1000)), main="mean(training$time)")
+
