@@ -1,7 +1,8 @@
 
-install.packages("caret")
-install.packages("rpart")
-install.packages("tree")
-install.packages("randomForest")
-install.packages("e1071")
-install.packages("ggplot2")
+required_packages <- c("caret","rpart","tree","randomForest","e1071","ggplot2")
+
+for (package in required_packages) {
+  if (!require(package, character.only=TRUE)) { 
+    install.packages(package, character.only=TRUE)
+  }
+}
