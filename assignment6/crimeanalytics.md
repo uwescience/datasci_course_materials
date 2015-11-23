@@ -125,3 +125,12 @@ All this said, we cannot provide a custom tutorial for how to use Jupyter, so yo
 ### Collaboration
 
 You are encouraged to discuss the project on the discussion boards to generate ideas and solve problems, but each student must turn in their own work. We will not accept duplicate submissions.
+
+### Examples to Consider when Scoping your Submission
+
+These examples use data from the [Pronto Data Challenge](https://www.prontocycleshare.com/datachallenge).
+
+ - For illustration purposes, [this project](http://nbviewer.jupyter.org/github/jakevdp/ProntoData/blob/master/ProntoData.ipynb) exhibits *much more* than you are expected to do for this assignment, but is otherwise a very nice example.  This project answer manny questions instead of just identifying one key finding, and makes extensive use of machine learning.  You are only expected to explore one question and come up 2-3 supporting visualizations.
+
+ - [This project on the Pronto dataset](http://www.prontocycleshare.com/assets/pdf/document4.pdf) uses a literate programming style -- text inteleaved with code samples and visualizations.  This is a reasonable approach to achieving reproducibility, but clarity is the priority for this assignment: make sure the code does not get in the way of communicating your primary finding.  Also, this project attempts to answer many questions; for this assignment, we expect 2-3 visualizations in support of a single primary finding.  And, you are not required to provide all of your code inline.
+
