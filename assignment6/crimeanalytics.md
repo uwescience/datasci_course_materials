@@ -57,7 +57,7 @@ Note that the full Chicago dataset covering 2001 to present has 5M records and i
 
 You will be asked to review FOUR submissions.
 
-There are 9 questions in the rubric, each with a scale of 0 to 4 points. In all cases, the first option, worth 0 points, is intended to be used only when the assignment is sufficiently broken as to make it impossible to review. The highest option, worth 4 points, is intended to be used when the assignment is exceptional and/or exemplary. The fourth option, worth 3 points, is intended to be used for quality submissions when there are no major problems. Scoring a 3 on every question means you have a very good submission; you are not expected to get a score of 4 for every question!
+There are ten questions in the rubric, each with a scale of 0 to 4 points. In all cases, the first option, worth 0 points, is intended to be used only when the assignment is sufficiently broken as to make it impossible to review. The highest option, worth 4 points, is intended to be used when the assignment is exceptional and/or exemplary. The fourth option, worth 3 points, is intended to be used for quality submissions when there are no major problems. Scoring a 3 on every question means you have a very good submission; you are not expected to get a score of 4 for every question!
 
 A passing grade is 60%, which corresponds to achieving a score of 3 on four questions and a score of 2 on the remaining six. This grading is not especially strict, but do not get complacent; make sure your submission is coherent and readable, you should score well.
 
