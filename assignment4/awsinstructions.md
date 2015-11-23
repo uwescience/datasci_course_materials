@@ -136,6 +136,8 @@ below.
 
 ## Monitoring Hadoop jobs
 
+### Easy Way: SSH Tunneling
+
 By far the easiest way to do this from linux or a mac is to use ssh tunneling.
   1. Run this command
 
@@ -145,15 +147,17 @@ By far the easiest way to do this from linux or a mac is to use ssh tunneling.
   
 From there, you can monitor your jobs' progress using the UI.
 
+### Hard Way 1: Lynx
 There are two other ways to do this: using [lynx](http://lynx.isc.org/) or using your own browser with a SOCKS proxy.
-  1. Using LYNX. Very easy, you don't need to download anything. Open a separate `ssh` connection
+
+ Using LYNX. Very easy, you don't need to download anything. Open a separate `ssh` connection
 to the AWS master node and type:
   
   
 `% lynx http://localhost:9100/ `
   
   
-Lynx is a text browswer. Navigate as follows: `up/down arrows `=
+Lynx is a text browser. Navigate as follows: `up/down arrows `=
 move through the links (current link is highlighted); `enter` =
 follows a link; `left arrow` = return to previous page.
   
@@ -164,9 +168,10 @@ be able to drill down into each map task (for example to monitor its progress);
 you should be able to look at the log files of the map tasks (if there
 are runtime errors, you will see them only in these log files).
   
-  
-  2. Using SOCKS proxy, and your own browser. This requires more work, but
-the nicer interface makes it worth the extra work
+### Hard Way 2: Proxy
+
+Using SOCKS proxy, and your own browser. This requires more work, but the nicer interface makes it worth the extra work over using Lynx
+
     1. Set up your browser to use a proxy when connecting to the master node. _Note: If the instructions fail for one browser, try the other browser_.
 In particular, it seems like people are having problems with Chrome but
 Firefox, especially following Amazon's instructions, works well.
