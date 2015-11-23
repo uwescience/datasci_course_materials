@@ -105,12 +105,6 @@ You may consider desktop tools such as  [Tableau](http://www.tableau.com/) (stud
 
 You may consider interactive online tools such as  [Google Fusion Tables](https://sites.google.com/site/fusiontablestalks/stories).
 
-_Aside: At the University of Washington, we are developing new online visualization tools that explore different levels of automation and interactivity. These tools operate in your browser, and will struggle with datasets of the size used in this assignment. However, you may find them effective for visualizing aggregated or filtered data._
-
-_You may use these tools if you wish, though be aware that they are first and foremost research projects and we cannot guarantee support. If you do find bugs, we are always happy for you to log them!_
-
-_These tools are _ [_Polestar_](http://vega.github.io/polestar/)_, an interactive visualization builder that has a similar style to Tableau, and _ [_Voyager_](http://vega.github.io/voyager/)_, a visualization recommendation interface that constructs common visualizations on the fly by applying heuristics and design principles. The code for both _ [_Polestar_](https://github.com/vega/polestar)_ and _ [_Voyager_](https://github.com/vega/voyager)_ is available on github, and you may run them locally if you wish._
-
 Regardless of which tool you use, it is your responsibility to ensure that your submission is posted somewhere accessible for peer review!
 
 **Jupyter Notebooks**
