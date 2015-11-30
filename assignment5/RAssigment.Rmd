@@ -1,0 +1,142 @@
+---
+title: "R Assignment: Classification of Ocean Microbes"
+author: "RDSN"
+date: "13 November 2015"
+output: html_document
+---
+
+
+```{r}
+library(caret)
+library(rpart)
+library(tree)
+library(randomForest)
+library(e1071)
+library(ggplot2)
+```
+
+```{r}
+dat <- read.csv("seaflow_21min.csv")
+str(dat)
+```
+
+```{r}
+summary(dat)
+```
+
+```{r}
+set.seed(1)
+inTrain <- createDataPartition(y=dat$pop, p=0.5, list=FALSE)
+training <- dat[inTrain,]
+testing <- dat[-inTrain,]
+```
+
+```{r}
+dim(training)
+dim(testing)
+```
+
+```{r}
+mean(training$time)
+```
+
+```{r}
+g <- ggplot(data = training, aes(chl_small, pe, col = pop)) + geom_point()
+g <- g + ggtitle("pe by chl_small colored by pop")
+g
+```
+
+```{r}
+fol <- formula(pop ~ fsc_small + fsc_perp + fsc_big + pe + chl_big + chl_small)
+model <- rpart(fol, method = "class", data=training)
+print(model)
+```
+
+```{r}
+pred <- predict(model, testing, type = "class")
+
+pred_acc <- sum(pred == testing$pop)/nrow(testing)
+pred_acc
+```
+
+```{r}
+model_rf <- randomForest(fol, data=training)
+```
+
+```{r}
+pred_rf <- predict(model_rf, testing)
+
+pred_rf__acc <- sum(pred_rf == testing$pop)/nrow(testing)
+pred_rf__acc
+```
+
+```{r}
+importance(model_rf)
+```
+
+```{r}
+model_svm <- svm(fol, data=training)
+```
+
+```{r}
+pred_svm <- predict(model_svm, testing)
+
+pred_svm__acc <- sum(pred_svm == testing$pop)/nrow(testing)
+pred_svm__acc
+```
+
+```{r}
+table(pred = pred, true = testing$pop)
+table(pred = pred_rf, true = testing$pop)
+table(pred = pred_svm, true = testing$pop)
+```
+
+```{r}
+set.seed(1)
+dat2 <- subset(dat, dat$file_id != 208)
+inTrain <- createDataPartition(y=dat2$pop, p=0.5, list=FALSE)
+training2 <- dat2[inTrain,]
+testing2 <- dat2[-inTrain,]
+```
+
+```{r}
+model_svm2 <- svm(fol, data=training2)
+```
+
+```{r}
+pred_svm2 <- predict(model_svm2, testing2)
+
+pred_svm2__acc <- sum(pred_svm2 == testing2$pop)/nrow(testing2)
+pred_svm2__acc
+```
+
+```{r}
+pred_svm2__acc - pred_svm__acc
+```
+
+```{r}
+g <- ggplot(data = training2, aes(chl_big, time)) + geom_point()
+g <- g + ggtitle("time vs chl_big")
+g
+```
+
+```{r}
+# (fsc_small, fsc_perp, fsc_big, pe, chl_small, chl_big)
+
+summary(training2)
+
+g <- ggplot(data = training2, aes(fsc_big, time)) + geom_point()
+g <- g + ggtitle("time vs fsc_big")
+g
+```
+
+```{r}
+change <- function(x){
+switch(x,"crypto" = "A", "nano" = "B", "pico" = "C", "synecho" = "D", "ultra" = "E")
+}
+
+essai1 <- mapply(change, pred_svm)
+essai2 <- mapply(change, testing$pop)
+```
+
+

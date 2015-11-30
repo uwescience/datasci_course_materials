@@ -1,0 +1,130 @@
+---
+title: "Assignment"
+author: "RDSN"
+date: "28 November 2015"
+output: html_document
+---
+
+# Digging into the Seattle end SanFransisco datasets released
+
+In this assignment, you will analyze criminal incident data from Seattle or San Francisco to visualize patterns and, if desired, contrast and compare patterns across the two cities.
+
+You will produce a blog-post-style visual narrative consisting of a series of visualizations interspersed with sufficient descriptive text to make a convincing argument.
+
+The assignment will be assessed by peer review. The rubric for assessment will include questions about the effectiveness and clarity of your argument, your use of visualization, and the completeness of your analysis. Reproducibility will also be considered, but will be evaluated subjectively -- peer reviewers will not be asked to recreate your results.
+
+If you want to see the code producing this analysis, it's all available at this link : report with code
+
+## Datasets overview
+
+### Seattle
+
+```{r}
+sea = read.csv('seattle_incidents_summer_2014.csv');
+dim(sea) # 32779 x 19
+str(sea)
+names(sea)
+
+```
+
+These incidents are based on initial police reports taken by officers when responding to incidents around the city. The information enters our Records Management System (RMS) and is then transmitted out to data.seattle.gov. This information is published within 6 to 12 hours after the report is filed into the system.
+
+Let's check that every RMS code is unique.
+```{r}
+length(unique(sea$RMS.CDW.ID))
+```
+This corresponds to he number of rows. OK this RMS code is unique.
+
+Let's check what the attributes look like.
+```{r}
+summary(sea)
+```
+
+ * RMS.CDW.ID : integer, 32 779 values
+ * General.Offense.Number : numeric, 16 937 values
+ * Offense.Code : factor, 92 levels
+ * Offense.Code.Extension : integer, 37 different values
+ * Offense.Type : factor, 147 levels
+ * Summary.Offense.Code : factor, 26 levels
+ * Summarized.Offense.Description : factor, 48 levels
+ * Date.Reported : factor, 15 766 levels
+ * Occurred.Date.or.Date.Range.Start : factor, 11 557 levels
+ * Occurred.Date.Range.End : factor, 5 935 levels
+ * Hundred.Block.Location : factor, 7 924 levels
+ * District.Sector : factor, 19 levels
+ * Zone.Beat : factor, 53 levels
+ * Census.Tract.2000 : numeric, 8 037 values
+ * Longitude, Latitude : numeric
+ * Location : factor, 12 970 levels
+ * Month : integer, 3 values (6 - June, 7 - July, 8 - August)
+ * Year : integer, 1 value - 2014
+
+What we can observe from those values :
+
+ * This dataset reports crimes appearing in the city of Seattle, in the summer 2014, from June to August 2014.
+ * The variable Location is a tuple composed by the Longitude variable and the Latitude variable.
+ * Times and dates are not in the appropriate format to make analysis. We must transform them so that we can use them to initialize plots.
+ * Different levels of details are available so that to group offenses. So we can choose different variables to get different levels of details to perform anaylsis.
+ * In the same way, the location can be defined by different variables (location, longitude, latitude, zone, distric sector).
+
+
+Let's transform date variables from factors to dates and time.
+```{r}
+sea$Occurred.Date.Range.End <- as.character(sea$Occurred.Date.Range.End)
+sea$Occurred.Date.or.Date.Range.Start <- as.character(sea$Occurred.Date.or.Date.Range.Start)
+sea$Date.Reported <- as.character(sea$Date.Reported)
+
+sea$Occurred.Date.Range.End <- as.POSIXct(sea$Occurred.Date.Range.End, format ="%m/%d/%Y %H:%M:%S")
+sea$Occurred.Date.or.Date.Range.Start <- as.POSIXct(sea$Occurred.Date.or.Date.Range.Start, format ="%m/%d/%Y %H:%M:%S")
+sea$Date.Reported <- as.POSIXct(sea$Date.Reported, format ="%m/%d/%Y %H:%M:%S")
+
+```
+
+Let's now try to answer some questions.
+
+### How do incidents vary by time of day
+
+```{r, fig.align='center', fig.height= 3.5, fig.width= 9, message = FALSE}
+
+ofType <- as.data.frame(table(sea$Offense.Type))
+colnames(ofType) <- c("offenseType", "freq")
+
+ofDate <- as.data.frame(table(sea$Date.Reported))
+colnames(ofDate) <- c("time", "freq")
+ofDate$time <- as.character(ofDate$time)
+ofDate$time <- as.POSIXct(ofDate$time, format ="%Y-%m-%d %H:%M:%S")
+ofDate$year <- as.numeric(format(ofDate$time, "%Y"))
+ofDate$month <- as.numeric(format(ofDate$time, "%m"))
+ofDate <- subset(ofDate, ofDate$year == "2014" & (ofDate$month >= 6 & ofDate$month <= 8))
+ofDate$Date <- as.POSIXct(paste(format(ofDate$time, "%Y"),"/", format(ofDate$time, "%m"), "/", format(ofDate$time, "%d")), format = "%Y / %m / %d")
+
+#require(gridExtra)
+library(ggplot2)
+
+g <- ggplot(data = ofDate, aes(x = Date,y = freq)) + geom_line()
+g <- g + ggtitle("Incidents over time")
+
+h <- ggplot(data = ofType, aes(x = offenseType)) + geom_bar(position = "dodge")
+h <- h + ggtitle("Incidents by Type")
+h <- h + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+g
+h
+
+#grid.arrange(g,h,ncol=2)
+```
+
+
+### San Fransisco
+
+```{r}
+san = read.csv('sanfrancisco_incidents_summer_2014.csv');
+dim(san) # 28993 x 13
+str(san)
+```
+
+```{r}
+nibr <- read.csv("NIBRS.csv")
+```
+
+

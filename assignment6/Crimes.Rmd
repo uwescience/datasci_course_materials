@@ -1,0 +1,348 @@
+---
+title: "Crimes Analysis in Seatlle and San Francisco in summer 2014"
+author: "RDSN"
+date: "30 November 2015"
+output: html_document
+---
+
+## Digging into the Seattle and San Francisco datasets released
+
+We have been provided with datasets from cities of Seattle and San Francisco reporting criminal incidents in summer 2014.  
+This paper is about analyzing those datasets, visualazing and comparing patterns accross those two cities.  
+This analysis allowed us to infer that :
+
+ * During summer 2014, The city of Seattle presents a number of offenses per capita higher than the city of San Francisco.
+ * Globally, for both cities, the type of offenses with the higher number of occurances is "All Other Crimes", which is not surprising in regard of the high number of sub-categories contained in this type of offenses.
+ * In San Francisco, there is a high number of larcenies per capita, and this number is far more important than in Seattle.
+ * In the meantime, there is a higher number of Public Disorders per capita in Seattle than in San Francisco during this period.
+ * From June to August, the number of Public Disorders per capita in San Francisco growed.
+ * Furthermore, we can observe that, on average, the number of Public Disorders per capita, in both cities, grows from June to July, and then starts to decrease from the beginning of August.
+ * Finally, we can observe that, on average, the number of larcenies per capita, in both cities, decreases slightly in June, is steady in July, and starts to grow slightly in August.
+
+We will go trhough all those statements in detail in this paper.  
+
+If you want to see the report without code, it's all available at this link : [report without code](http://rpubs.com/rdsn/131998) or at the link under each figure.
+
+## Datasets overview
+
+First, we load the datasets, recorded in a .csv format, and see what we are provided with.  
+```{r}
+sea = read.csv('seattle_incidents_summer_2014.csv');
+dim(sea) # 32779 x 19
+str(sea)
+names(sea)
+san = read.csv('sanfrancisco_incidents_summer_2014.csv');
+dim(san) # 28993 x 13
+str(san)
+names(san)
+```
+
+What we can observe from those values :
+
+ * These datasets report crimes appearing in the city of Seattle and San Francisco, in the summer 2014, from June to August 2014.
+ * Each dataset contains different pieces of information, such as location, date and time, crimes categories. Those pieces of information are reported in each city in a different way. For example, crimes categories are not the same in the Seattle and San Francisco report. That means that we will have to manipulate features so to enable a proper comparison before those two datasets.
+ * Once we have transformed those pieces of information such as to be able to perform comparison, we can analyze crimes through time, through categories, and through cities.
+
+First, let's transform those variables and create a single dataframe so that to compare values for those two cities.
+```{r}
+# SEATTLE
+# Let's first retain only the variables we are interested in
+sea_new <- sea[,c("Summarized.Offense.Description", "Occurred.Date.or.Date.Range.Start", "Year", "Month")]
+# rename the columns for clarity
+names(sea_new) <- c("offenseDescription", "dateRaw", "Year", "Month")
+# transform features so they can be used to perform analysis
+sea_new$offenseDescription <- as.character(sea_new$offenseDescription)
+sea_new$dateRaw <- as.character(sea_new$dateRaw)
+sea_new$dateRaw <- as.POSIXct(sea_new$dateRaw, format = "%m/%d/%Y %H:%M:%S")
+sea_new$Date <- as.Date(as.POSIXct(sea_new$dateRaw))
+
+# SAN FRANCISCO
+# Let's first retain only the variables we are interested in
+san_new <- san[,c("Category", "Date", "Time")]
+# rename the columns for clarity
+names(san_new) <- c("offenseDescription", "dateRaw", "Time")
+# transform features so they can be used to perform analysis
+san_new$offenseDescription <- as.character(san_new$offenseDescription)
+san_new$dateRaw <- as.character(san_new$dateRaw)
+san_new$Time <- as.character(san_new$Time)
+san_new$dateRaw <- paste(san_new$dateRaw, san_new$Time)
+san_new$dateRaw <- as.POSIXct(san_new$dateRaw, format = "%m/%d/%Y %H:%M")
+san_new$Date <- as.Date(as.POSIXct(san_new$dateRaw))
+san_new$Year <- as.integer(format(san_new$dateRaw, "%Y"))
+san_new$Month <- as.integer(format(san_new$dateRaw, "%m"))
+san_new <- san_new[, c("offenseDescription", "dateRaw", "Year", "Month", "Date")]
+```
+In order to create this signle dataframe, we have to convert all the crimes descriptions in each dataset so that both cities present the same categories.  
+To do so, we have collected the National Incident-Based Reporting System (NIBRS) data, which categorize crimes into universal categories.  
+This dataset can be found here : <http://data.denvergov.org/download/gis/crime/csv/offense_codes.csv>  
+The NIBRS data contains 15 high categories of crimes, and 294 sub-categories.  
+As we can observe from the Seattle and the San Francisco datasets :
+
+ * Seattle data : 48 categories and 147 sub-categories
+ * San Francisco data : 34 categories and 368 sub-categories.
+For the purpose of this analysis, we are going to fit categories in each of the datasets with the 15 categories from the NIBRS dataset.
+```{r}
+nibrs <- read.csv("NIBRS.csv")
+
+# SEATTLE
+for (i in 1:nrow(sea_new)){
+    sea_new$offenseDescription[i] <- switch(sea_new$offenseDescription[i], 
+           "BURGLARY" = "Burglary",
+           "FRAUD" = "White Collar Crime",
+           "MAIL THEFT" = "Larceny",
+           "COUNTERFEIT" = "White Collar Crime",
+           "OTHER PROPERTY" = "All Other Crimes", 
+           "EMBEZZLE" = "White Collar Crime",
+           "CAR PROWL" = "All Other Crimes",
+           "THREATS" = "Public Disorder",
+           "PROPERTY DAMAGE" = "Public Disorder",
+           "LOST PROPERTY" = "All Other Crimes",
+           "FORGERY" = "White Collar Crime",
+           "VEHICLE THEFT" = "Auto Theft",
+           "BURGLARY-SECURE PARKING-RES" = "Burglary",
+           "PICKPOCKET" = "Robbery",
+           "BIKE THEFT" = "Larceny",
+           "NARCOTICS" = "Drug & Alcohol",
+           "DISPUTE" = "Public Disorder",
+           "ASSAULT" = "Aggravated Assault",
+           "STOLEN PROPERTY" = "All Other Crimes",
+           "WARRANT ARREST" = "All Other Crimes",
+           "TRAFFIC" = "Traffic Accident",
+           "SHOPLIFTING" = "Larceny",
+           "DISTURBANCE" = "Public Disorder",
+           "VIOLATION OF COURT ORDER" = "All Other Crimes",
+           "ILLEGAL DUMPING" = "All Other Crimes",
+           "PROSTITUTION" = "Public Disorder",
+           "ROBBERY" = "Robbery",
+           "TRESPASS" = "All Other Crimes",
+           "LIQUOR VIOLATION" = "Drug & Alcohol",
+           "BIAS INCIDENT" = "All Other Crimes",
+           "THEFT OF SERVICES" = "Larceny",
+           "HOMICIDE" = "Murder",
+           "RECOVERED PROPERTY" = "All Other Crimes",
+           "OBSTRUCT" = "All Other Crimes",
+           "RECKLESS BURNING" = "All Other Crimes",
+           "INJURY" = "Aggravated Assault",
+           "WEAPON" = "Aggravated Assault",
+           "PURSE SNATCH" = "Robbery",
+           "FALSE REPORT" = "All Other Crimes",
+           "ELUDING" = "All Other Crimes",
+           "ANIMAL COMPLAINT" = "All Other Crimes",
+           "PORNOGRAPHY" = "All Other Crimes",
+           "DUI" = "Traffic Accident",
+           "FIREWORK" = "All Other Crimes",
+           "[INC - CASE DC USE ONLY]" = "All Other Crimes",
+           "PUBLIC NUISANCE" = "Public Disorder",
+           "DISORDERLY CONDUCT" = "Public Disorder",
+           "ESCAPE" = "All Other Crimes"
+           )
+}
+
+# SAN FRANCISCO
+for (i in 1:nrow(san_new)){
+    san_new$offenseDescription[i] <- switch(san_new$offenseDescription[i], 
+           "ARSON" = "Arson",
+           "NON-CRIMINAL" = "All Other Crimes",
+           "LARCENY/THEFT" = "Larceny",
+           "DRUG/NARCOTIC" = "Drug & Alcohol",
+           "DRIVING UNDER THE INFLUENCE" = "Drug & Alcohol", 
+           "OTHER OFFENSES" = "All Other Crimes",
+           "TRESPASS" = "All Other Crimes",
+           "VEHICLE THEFT" = "Auto Theft",
+           "ASSAULT" = "Aggravated Assault",
+           "FRAUD" = "White Collar Crime",
+           "SUSPICIOUS OCC" = "All Other Crimes",
+           "SECONDARY CODES" = "All Other Crimes",
+           "WEAPON LAWS" = "Aggravated Assault",
+           "MISSING PERSON" = "All Other Crimes",
+           "WARRANTS" = "All Other Crimes",
+           "ROBBERY" = "Robbery",
+           "DRUNKENNESS" = "Drug & Alcohol",
+           "PROSTITUTION" = "Public Disorder",
+           "LIQUOR LAWS" = "Drug & Alcohol",
+           "KIDNAPPING" = "All Other Crimes",
+           "FAMILY OFFENSES" = "Aggravated Assault",
+           "LOITERING" = "Public Disorder",
+           "DISORDERLY CONDUCT" = "Public Disorder",
+           "FORGERY/COUNTERFEITING" = "White Collar Crime",
+           "EMBEZZLEMENT" = "White Collar Crime",
+           "BURGLARY" = "Burglary",
+           "SUICIDE" = "All Other Crimes",
+           "VANDALISM" = "All Other Crimes",
+           "STOLEN PROPERTY" = "All Other Crimes",
+           "RUNAWAY" = "All Other Crimes",
+           "GAMBLING" = "All Other Crimes",
+           "EXTORTION" = "All Other Crimes",
+           "PORNOGRAPHY/OBSCENE MAT" = "All Other Crimes",
+           "BRIBERY" = "All Other Crimes"
+           )
+}
+
+# We now create a column "city" in each dataset
+sea_new$City <- "Seattle"
+san_new$City <- "San Francisco"
+# Now we can create a new whole dataset binding rows
+alldata <- rbind(sea_new, san_new)
+alldata$Date <- as.Date(as.POSIXct(alldata$dateRaw, tz="CET"), tz="CET")
+```
+
+Let's make a plot of this whole new dataset.
+
+```{r}
+ofDate <- as.data.frame(table(alldata$Date, alldata$City))
+colnames(ofDate) <- c("Date", "City", "Freq")
+ofDate$Date <- as.Date(ofDate$Date)
+```
+
+```{r,fig.align='center', fig.height= 3.5, fig.width= 10, message = FALSE}
+library(ggplot2)
+
+g <- ggplot(data = ofDate, aes(x = Date,y = Freq, colour = City)) + geom_line()
+g <- g + xlab("Date") + ylab("Number of offenses") + ggtitle("Number of offenses in summer 2014 \n in Seattle and San Francisco")
+g
+
+```
+
+[report without code](http://rpubs.com/rdsn/131998)  
+
+
+This plot seems to tell us that the number of offenses is higher in Seattle than in San Francisco. Indeed, we could have noticed before that the number of records in the Seattle dataset (32 779) is higher than in the San Francisco dataset (28 993). This trend may be just due to the fact that the number of people living in Seattle is greater than the ones living in San Francisco.  
+Let's check.
+
+ * Seattle : [668 342](https://en.wikipedia.org/wiki/Demographics_of_Seattle)
+ * San Francisco : [805 235](https://suburbanstats.org/population/california/how-many-people-live-in-san-francisco)
+ 
+So if we plot again the evolution of the number of offenses over time, but this time taking into account the population, and so plotting this time the number of offenses per capita, here is what we get.
+```{r}
+pop_sea <- 668342
+pop_san <- 805235
+
+ofDate$FreqperC <- ifelse(ofDate$City == "Seattle", ofDate$Freq/pop_sea, ofDate$Freq/pop_san)
+```
+
+```{r,fig.align='center', fig.height= 5, fig.width= 10, message = FALSE}
+library(ggplot2)
+
+g <- ggplot(data = ofDate, aes(x = Date,y = FreqperC, colour = City)) + geom_line() + geom_smooth()
+g <- g + xlab("Date") + ylab("Number of offenses per Capita") + ggtitle("Number of offenses per capita in summer 2014 \n in Seattle and San Francisco")
+g
+```
+
+[report without code](http://rpubs.com/rdsn/131998)  
+
+
+Let's notice that we have here plotted a smooth curve representing the trend for each city.  
+This plot allows us to understand that there are more offenses happening in summer 2014 in Seatlle than in San Francisco, this not being due to the demographics. Indeed, Seattle counts less inhabitants than San Francisco, that fact deeping the gap between the two cities in terms of number of offenses.  
+
+Let's dig deeper.
+
+## Types of offenses
+
+Now we are going to watch the different types of offenses, trying to understand what kind happens the most. Let's have alook first at the general distribution, accross both cities.
+```{r}
+ofType0 <- as.data.frame(table(alldata$offenseDescription))
+colnames(ofType0) <- c("offenseType", "Freq")
+ofType0$offenseType <- as.character(ofType0$offenseType)
+```
+
+```{r,fig.align='center', fig.height= 3.5, fig.width= 9, message = FALSE}
+library(ggplot2)
+
+g <- ggplot(data = ofType0, aes(offenseType, Freq)) + geom_bar(stat = "identity", fill = "dark blue")
+g <- g + ylab("Number of offenses") + xlab("Type of offenses") + ggtitle("Offenses in summer 2014") + coord_flip()
+g
+```
+
+[report without code](http://rpubs.com/rdsn/131998)  
+
+
+So, with this plot, we figure out that the category of offenses occuring the most is "All Other Crimes". That's not surprising because this category regroups a lot of sub-categories. The second most important one is "Larceny". Globally, we can print the top 5 most occuring offenses this way.
+```{r}
+ofType0 <- ofType0[order(ofType0$Freq, decreasing = TRUE),]
+head(ofType0,5)
+```
+
+Do those categories are the same in both cities?
+```{r}
+ofType <- as.data.frame(table(alldata$offenseDescription, alldata$City))
+colnames(ofType) <- c("offenseType", "City", "Freq")
+ofType$offenseType <- as.character(ofType$offenseType)
+ofType <- ofType[order(ofType$Freq, decreasing = TRUE),]
+ofType$FreqperC <- ifelse(ofType$City == "Seattle", ofType$Freq/pop_sea, ofType$Freq/pop_san)
+```
+
+```{r,fig.align='center', fig.height= 6, fig.width= 9, message = FALSE}
+library(ggplot2)
+
+g <- ggplot(data = ofType, aes(offenseType, FreqperC, fill = City)) + geom_bar(stat = "identity", position="dodge")
+g <- g + xlab("Type of offenses") + ylab("Frequency per Capita") + ggtitle("Number of offenses per capita, per type, \n in summer 2014 in Seattle and in San Francisco") + theme(axis.text.x = element_text(angle = 75, hjust = 1))
+g
+```
+
+[report without code](http://rpubs.com/rdsn/131998)  
+
+
+Here we see clearly that, appart from the category "All Other Crimes" for which in both cities the frequency is high, trends depend upon cities.  
+In Seattle, we observe that "Larceny" is far less occuring than in San Francisco. On the opposite, "Public Disorder" is far more occuring in Seattle while in San Francisco it stays relatively marginal.
+
+## Time evolution of offenses
+
+We can go further and watch those types of offenses month by month.
+```{r}
+ofTypeM <- as.data.frame(table(alldata$offenseDescription, alldata$City, alldata$Month))
+colnames(ofTypeM) <- c("offenseType", "City", "Month", "Freq")
+ofTypeM$offenseType <- as.character((ofTypeM$offenseType))
+ofTypeM$FreqperC <- ifelse(ofTypeM$City == "Seattle", ofTypeM$Freq/pop_sea, ofTypeM$Freq/pop_san)
+ofTypeMSe <- subset(ofTypeM, ofTypeM$City == "Seattle")
+ofTypeMSa <- subset(ofTypeM, ofTypeM$City == "San Francisco")
+```
+
+```{r,fig.align='center', fig.height= 5, fig.width= 9, message = FALSE}
+require(gridExtra)
+library(ggplot2)
+
+g <- ggplot(data = ofTypeMSe, aes(offenseType, FreqperC, fill = Month)) + geom_bar(stat = "identity", position="dodge")
+g <- g + xlab("Type of offenses") + ylab("Frequency per capita") + ggtitle("Number of offenses per capita \n by Month in 2014, in Seattle") + theme(axis.text.x = element_text(angle = 75, hjust = 1))
+
+h <- ggplot(data = ofTypeMSa, aes(offenseType, FreqperC, fill = Month)) + geom_bar(stat = "identity", position="dodge")
+h <- h + xlab("Type of offenses") + ylab("Frequency per capita") + ggtitle("Number of offenses per capita by Month \n in 2014, in San Francisco") + theme(axis.text.x = element_text(angle = 75, hjust = 1))
+
+grid.arrange(g,h,ncol=2)
+```
+
+[report without code](http://rpubs.com/rdsn/131998)  
+
+
+This plot gives us an overview of the offenses'evolution month by month, but it would be much clearer to plot lines. We will here focus on "Larceny" and "Public Disorder" as they are the most different categories between both cities. Let's try it.
+```{r}
+ofTypeM_new <- as.data.frame(table(alldata$offenseDescription, alldata$City, alldata$Date))
+colnames(ofTypeM_new) <- c("offenseType", "City", "Date", "Freq")
+ofTypeM_new$offenseType <- as.character((ofTypeM_new$offenseType))
+ofTypeM_new$Date <- as.Date(ofTypeM_new$Date)
+ofTypeM_new <- subset(ofTypeM_new, ofTypeM_new$offenseType == "Larceny" | ofTypeM_new$offenseType == "Public Disorder")
+ofTypeM_new$FreqperC <- ifelse(ofTypeM_new$City == "Seattle", ofTypeM_new$Freq/pop_sea, ofTypeM_new$Freq/pop_san)
+ofTypeM_newSe <- subset(ofTypeM_new, ofTypeM_new$City == "Seattle")
+ofTypeM_newSa <- subset(ofTypeM_new, ofTypeM_new$City == "San Francisco")
+```
+
+```{r,fig.align='center', fig.height= 4, fig.width= 14, message = FALSE}
+library(ggplot2)
+
+g <- ggplot(data = ofTypeM_newSe, aes(Date, FreqperC, colour = offenseType)) + geom_line() + geom_smooth()
+g <- g + xlab("Date") + ylab("Frequency per Capita") + ggtitle("Number of offenses per capita \n over time in summer 2014 in Seattle")
+
+h <- ggplot(data = ofTypeM_newSa, aes(Date, FreqperC, colour = offenseType)) + geom_line() + geom_smooth()
+h <- g + xlab("Date") + ylab("Frequency per Capita") + ggtitle("Number of offenses per capita \n over time in summer 2014 in San Francisco")
+
+grid.arrange(g,h,ncol=2)
+```
+
+[report without code](http://rpubs.com/rdsn/131998)  
+
+
+In this plot, we can observe that there is a speficic trend, the same one in both cities :
+
+ * Larcenies tend to decrease slightly in June, stay steady during July, and then increase in August.
+ * Public Disorders tend to occur more frequently from June to July, and, by the end of July, start to decrease in a steep manner.
+
+There is certainly here more to investigate, which we would do if we had more time.
