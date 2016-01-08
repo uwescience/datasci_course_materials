@@ -1,0 +1,47 @@
+import sys
+import json
+
+
+def lines(fp):
+    print str(len(fp.readlines()))
+
+def main():
+    sent_file = open(sys.argv[1])
+    tweet_file = open(sys.argv[2])
+
+    afinnfile = open("AFINN-111.txt")
+    scores = {} # initialize an empty dictionary
+    for line in afinnfile:
+      term, score  = line.split("\t")  # The file is tab-delimited. "\t" means "tab character"
+      scores[term] = int(score)  # Convert the score to an integer.
+
+    #print scores.items() # Print every (term, score) pair in the dictionary
+    
+    lines = tweet_file.readlines()
+
+    tweets = []
+    for (i, line) in enumerate(lines):
+      obj = json.loads(line)
+      if "text" in obj and "lang" in obj:
+        if obj["lang"] != "en": continue
+        tweet = obj[u"text"]
+        score = 0
+        for word in tweet.split():
+          if word in scores:
+            score += scores[word]        
+        tweets.append((obj, score))
+
+    terms = {}
+    for (tweet, score) in tweets:
+      for word in tweet["text"].split():
+        terms.setdefault(word,[]).append(score)
+
+    for (t,scores) in terms.items():
+      score = sum(scores)/len(scores)
+      if score != 0:
+        print t, score
+      
+
+
+if __name__ == '__main__':
+    main()
