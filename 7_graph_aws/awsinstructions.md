@@ -72,28 +72,39 @@ set memory options.
 1. Go to
 [http://console.aws.amazon.com/elasticmapreduce/home](http://console.aws.amazon.com/elasticmapreduce/home)
 and sign in.
-2. Click "Create Cluster".
-3. Under General Configuration:
+1. On the top menu bar, at the right, select the US West (Oregon) region -- this
+is where the dataset is, so reads will go faster if the cluster is located in
+the same datacenter.
+1. Click "Create Cluster".
+1. Under General Configuration:
     * In the "Cluster Name" field, you can enter a name to identify the purpose
       of the cluster.
+    * Un-check Logging, unless you are certain that you want it.
+      (This will write a log to S3, which may exceed your S3 "put" quota, and
+      in any case, you will be charged for S3 usage. Log messages are also
+      written to the terminal connected to the master node.)
     * For Launch mode, Cluster should be selected (this is the default).
-4. Under Software Configuration:
+1. Under Software Configuration:
     * Select "Core Hadoop".
-5. Under Hardware Configuration:
+1. Under Hardware Configuration:
     * Select the instance type. For most parts of this quiz, c1.medium will be
       fine. For the last quiz question, a larger instance size like m2.xlarge
       or m3.xlarge may be appropriate.
     * For number of instances, select 1 for now. For the last quiz question,
       you can select up to 20.
-6. Security and access:
+1. Security and access:
     * Select the name of the key pair you created earlier.
-7. When you're ready, click Create cluster.
-8. This will open the Cluster Details page. You can see the requested instances
+1. When you're ready, click Create cluster.
+1. This will open the Cluster Details page. You can see the requested instances
 being acquired and provisioned toward the right side of the form. The state of
 the cluster overall is shown near the top of the page.
-9. Now you need to obtain the Master Public DNS Name. After the cluster has
+1. Now you need to obtain the Master Public DNS Name. After the cluster has
 started this will be shown near the top of the Cluster Details page. In the
 following instructions, we call this Master Public DNS name `<master DNS>`.
+1. Wait until the master node, at least, has finished booting before
+connecting, and wait until all nodes have finished booting before running your
+pig program. On the cluster details page, under "Network and Hardware", you can
+watch the progress of the master and other nodes being set up.
   
 Now you are ready to connect to your cluster and run Pig jobs.
 
@@ -469,7 +480,58 @@ using S3 is that you have to click on each file separately to download.
 
 Note that S3 is permanent storage, and you are charged for it.
 
-## Run `example.pig`
+## Addressing memory problems
+
+If you encounter out-of-memory errors, such as a "Java heap space" error,
+you may need to adjust memory settings, choose machines with more memory,
+or use more machines.
+
+You can control, for instance, how many tasks are allowed to run
+simultaneously on each machine, how much memory is given to each task, and,
+within that, to the Java Virtual Machine (JVM). The tasks cannot use all the
+physical memory on the machine -- there must still be room for other required
+processes.
+
+General memory tuning advice can be found here (how to specify the
+parameters is at the very end of the page):
+* http://docs.aws.amazon.com/ElasticMapReduce/latest/ManagementGuide/MemoryTuning.html
+
+Tuning parameters:
+* http://docs.aws.amazon.com/ElasticMapReduce/latest/ReleaseGuide/emr-hadoop-task-config.html
+
+Physical memory for EC2 machine types:
+* http://aws.amazon.com/ec2/instance-types/
+* http://aws.amazon.com/ec2/previous-generation/
+
+More specific advice (though dated), showing calculations for parameters:
+* http://stackoverflow.com/questions/28742328/how-to-set-the-number-of-parallel-reducers-on-emr
+* http://stackoverflow.com/questions/33869593/aws-emr-there-is-insufficient-memory-for-the-java-runtime/33966000
+
+Pig tuning advice:
+* https://pig.apache.org/docs/r0.15.0/perf.html
+
+To set memory parameters, on the create cluster form, select "advanced options".
+You can choose equivalent settings as in the quick form, except on the software
+configuration, form, put your memory settings in the "Edit software settings"
+box. Here is an example of memory settings appropriate for a machine with 15GiB
+of memory:
+
+```
+[
+  {
+    "Classification": "mapred-site",
+    "Properties": {
+      "mapreduce.map.java.opts": "-Xmx2048m",
+      "mapreduce.reduce.java.opts": "-Xmx2048m",
+      "mapreduce.job.reuse.jvm.num.tasks": "1",
+      "mapreduce.map.memory.mb": "2560",
+      "mapreduce.reduce.memory.mb": "2560"
+    }
+  }
+]
+```
+
+## Run example.pig
 
 Now you are ready to run your first sample program. Take a look at the
 starter code that we provided in the course materials repo. Copy and paste
@@ -487,4 +549,4 @@ It can take some time for the reducers to start making any progress.
 * The example generates more than 1 MapReduce job so be patient.
 
 As described earlier, monitor your job as it runs.
-When it's done, copy your results and *terminate your cluster*.
+When it's done, copy your results and _**terminate your cluster**_.
