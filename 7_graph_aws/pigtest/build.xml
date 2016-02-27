@@ -1,0 +1,39 @@
+<project name="pig-myudfs" default="jar" basedir=".">
+    <!-- properties -->
+    <property name="builddir"      location="./build" />
+    <property name="docdir"      location="./doc" />
+    <property name="src" location="./src" />
+    <property name="jarfile" value="myudfs.jar" />
+
+    <path id="lib.path.ref">
+        <pathelement location="${builddir}" />
+        <fileset dir="lib" includes="*.jar" />
+    </path>
+
+    <target name="compile">
+        <mkdir dir="${builddir}"/>
+        <javac
+            target="1.6" 
+            srcdir="${src}" destdir="${builddir}"
+            includeAntRuntime="false"
+            classpathref="lib.path.ref" debug="true">
+            <include name="**/*.java" />
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <copy todir="${builddir}" preservelastmodified="true">
+            <fileset dir="${src}" includes="*.properties" />
+        </copy>
+        <jar destfile="${jarfile}">
+            <fileset dir="${builddir}" includes="**/*.class" />
+            <fileset dir="${builddir}" includes="**/*.properties" />
+        </jar>
+    </target>
+
+    <target name="clean">
+        <delete dir="${builddir}" />
+        <delete file="${jarfile}" />
+    </target>
+
+</project>
