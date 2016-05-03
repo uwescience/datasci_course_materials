@@ -24,8 +24,7 @@ Your Account".
 
 ## Setting up an EC2 key pair
 
-Note: Some students were having problem running job flows because of no
-active key found, go to [AWS security credentials page](https://portal.aws.amazon.com/gp/aws/securityCredentials "Link: https://portal.aws.amazon.com/gp/aws/securityCredentials") and
+Go to [AWS security credentials page](https://portal.aws.amazon.com/gp/aws/securityCredentials "Link: https://portal.aws.amazon.com/gp/aws/securityCredentials") and
 make sure that you see a key under the access key, if not just click Create
 a new Access Key.
 
@@ -59,52 +58,20 @@ look under "Private Key Format."
 
 To run a Pig job on AWS, you need to start up an AWS cluster using the
 [Web Management Console](https://console.aws.amazon.com/elasticmapreduce/home "Link: https://console.aws.amazon.com/elasticmapreduce/home") and connect to the Hadoop master node. Follow
-the steps below. You may also find [Amazon's interactive Pig tutorial](http://aws.amazon.com/articles/2729 "Link: http://aws.amazon.com/articles/2729") useful, but note that
-the screenshots are slightly out of date.To set up and connect to a
-pig cluster, perform the following steps:
+the steps below. 
+To set up and connect to a pig cluster, perform the following steps:
 
   1. Go to [http://console.aws.amazon.com/elasticmapreduce/home](http://console.aws.amazon.com/elasticmapreduce/home "Link: http://console.aws.amazon.com/elasticmapreduce/home") and
 sign in.
   2. Click the "Amazon Elastic MapReduce" tab.
-  3. Click the "Create New Job Flow" button.
-  4. In the "Job Flow Name" field type a name such as "Pig Interactive Job
-Flow".
-  5. Select "Pig Program" from the drop down box, and then click "Continue".
-Also select: "Run your own application".
-  6. Select the "Start an Interactive Pig Session" radio button and click "Continue".
-  7. On the next page, select only **1 small core instance**. In the
-last question of the quiz you will need to set your cluster to have 20 small nodes, rather than the 1 node.
-  8. On the next page, make sure that the EC2 Key Pair that is selected is
-the one you created above
-  9. On the last page, you will be asked if you want to configure _Bootstrap Actions_.
-You do, because the default configuration can sometimes run into memory
-problems. Select "Configure your Bootstrap Actions." Then, under "Action
-Type," select "Memory Intensive Configuration."
-  10. When you are done setting up your workflow and you come back to your management
-console, you may need to refresh the page to see your workflow. It may
-take a few minutes for your job flow to launch. If your cluster fails or
-takes an extraordinarily long time, Amazon may be near capacity. Try again
-later.
-  
-  
-  11. Now you need to obtain the Master Public DNS Name. You get this by clicking
-(highlighting) your job flow, which creates a frame at the bottom of your
-window. Scroll down in that frame and you will find the Master Public DNS
-at the bottom. We call this Master Public DNS name <master.public-dns-name.amazonaws.com\>.
-  
-  12. Now you are ready to connect to your cluster and run Pig jobs. From a
-terminal, use the following command:
-  
-  
-`$ ssh -o "ServerAliveInterval 10" -i </path/to/saved/keypair/file.pem>  hadoop@<master.public-dns-name.amazonaws.com>
-`
-  
-  
-  13. Once you connect successfully, just type 
+  3. Click on "Create cluster" in the EMR menu, and from there stay in the quick options and select in Applications "Core Hadoop" which should have everything you need. You can disable logging. Previous version c1.medium or m1.medium are acceptable for this exercise. Make sure you select your SSH keypair before clicking "Create cluster" otherwise you won't be able to SSH to your cluster. 
+  4. Go to https://console.aws.amazon.com/ec2/v2/, Networks and security, security groups and add to the group containing the master an inbound rule allowing ssh from anywhere.
+  5. In the cluster details, next to Master public DNS, click on SSH to have the command to run from the command line to connect to the cluster
+  6. Once you connect successfully, just type 
     
      **$ pig**
 
-  14. Now you should have a Pig prompt:
+  7. Now you should have a Pig prompt:
   
 
       **grunt>**
@@ -136,89 +103,52 @@ below.
 
 ## Monitoring Hadoop jobs
 
-### Easy Way: SSH Tunneling
+These instructions are available on the AWS control center, from the cluster details page (link next to *Connections*, under *Enable Web Connection*)
 
-By far the easiest way to do this from linux or a mac is to use ssh tunneling.
-  1. Run this command
+In summary:
 
-    ssh -L 9100:localhost:9100 -L 9101:localhost:9101  -i ~/.ssh/<your pem file> hadoop@<master DNS>
+###  Open an SSH Tunnel to the Amazon EMR Master Node
 
-  2. Open your browser to [http://localhost:9100](http://localhost:9100 "Link: http://localhost:9100")
-  
-From there, you can monitor your jobs' progress using the UI.
+From the terminal, type
+ 
+> `ssh -i </path/to/saved/keypair/file.pem>  -ND 8157 hadoop@<your instance>`
 
-### Hard Way 1: Lynx
-There are two other ways to do this: using [lynx](http://lynx.isc.org/) or using your own browser with a SOCKS proxy.
-
- Using LYNX. Very easy, you don't need to download anything. Open a separate `ssh` connection
-to the AWS master node and type:
-  
-  
-`% lynx http://localhost:9100/ `
-  
-  
-Lynx is a text browser. Navigate as follows: `up/down arrows `=
-move through the links (current link is highlighted); `enter` =
-follows a link; `left arrow` = return to previous page.
-  
-  
-Examine the webpage carefully, while your pig program is running. You
-should find information about the map tasks, the reduce tasks, you should
-be able to drill down into each map task (for example to monitor its progress);
-you should be able to look at the log files of the map tasks (if there
-are runtime errors, you will see them only in these log files).
-  
-### Hard Way 2: Proxy
-
-Using SOCKS proxy, and your own browser. This requires more work, but the nicer interface makes it worth the extra work over using Lynx
-
-    1. Set up your browser to use a proxy when connecting to the master node. _Note: If the instructions fail for one browser, try the other browser_.
-In particular, it seems like people are having problems with Chrome but
-Firefox, especially following Amazon's instructions, works well.
-      * Firefox:
-        1. Install the [FoxyProxy extension](https://addons.mozilla.org/en-US/firefox/addon/2464/) for Firefox.li\>
-        2. Copy the `foxyproxy.xml` configuration file from the course materials
-repo into your [Firefox profile folder](http://support.mozilla.com/kb/profiles).
-        3. If the previous step doesn't work for you, try deleting the `foxyproxy.xml` you
-copied into your profile, and using [Amazon's instructions](http://docs.amazonwebservices.com/ElasticMapReduce/latest/DeveloperGuide/UsingtheHadoopUserInterface.html#AccessingtheHadoopUserInterfacetoMonitorJobStatus2) to set up FoxyProxy manually.
-If you use Amazon's instructions, be careful to use port 8888 instead of
-the port in the instructions.
-      * Chrome:
-        1. Option 1: FoxyProxy is [now available for Chrome](http://getfoxyproxy.org/downloads.html) as
-well.
-        2. Option 2: You can try [proxy switch!](https://chrome.google.com/webstore/detail/caehdcpeofiiigpdhbabniblemipncjj "Link: https://chrome.google.com/webstore/detail/caehdcpeofiiigpdhbabniblemipncjj")
-        3. Click the _Tools_ icon (upper right corner; don't confuse it with
-the Developer's Tools !), Go to _Tools, _go to _Extensions_.
-Here you will see the ProxySwitch!: click on _Options_.
-        4. Create a new Proxy Profile: Manual Configuration, Profile name = Amazon
-Elastic MapReduce (any name you want), SOCKS Host = localhost, Port = 8888
-(you can choose any port you want; another favorite is 8157),
-SOCKS v5\. If you don't see "SOCKS", de-select the option to "Use the same
-proxy server for all protocols".
-        5. Create two new switch rules (give them any names, say AWS1 and AWS2).
-Rule 1: pattern=\*.amazonaws.com:\*/\*, Rule 2: pattern=\*.ec2.internal:\*/\*.
-For both, Type=wildcard, Proxy profile=\[the profile you created at the
-previous step\].
-    2. Open a new local terminal window and create the SSH SOCKS tunnel to the
-master node using the following: 
-    
-    $ ssh -o "ServerAliveInterval 10"** **-i </path/to/saved/keypair/file.pem> -ND 8888 hadoop@<master.public-dns-name.amazonaws.com>
-
-(The `-N` option
-tells `ssh` not to start a shell, and the `-D 8888` option
-tells `ssh` to start the proxy and have it listen on port 8888.)
-  
-  
-The resulting SSH window will appear to hang, without any output; this
+The SSH window will appear to hang, without any output; this
 is normal as SSH has not started a shell on the master node, but just created
 the tunnel over which proxied traffic will run.
-  
-  
-Keep this window running in the background (minimize it) until you are
-finished with the proxy, then close the window to shut the proxy down.
-    3. Open your browser, and type one of the following URLs:
-      * For the job tracker: `http://<master.public-dns-name.amazonaws.com>:9100/`
-      * For HDFS management: `http://<master.public-dns-name.amazonaws.com>:9101/`
+
+### Install and configure FoxyProxy
+
+1. Download and isntall FoxyProxy
+2. Using a text editor create a file named foxyproxy-settings.xml containing the following:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<foxyproxy>
+    <proxies>
+        <proxy name="emr-socks-proxy" id="2322596116" notes="" fromSubscription="false" enabled="true" mode="manual" selectedTabIndex="2" lastresort="false" animatedIcons="true" includeInCycle="true" color="#0055E5" proxyDNS="true" noInternalIPs="false" autoconfMode="pac" clearCacheBeforeUse="false" disableCache="false" clearCookiesBeforeUse="false" rejectCookies="false">
+            <matches>
+                <match enabled="true" name="*ec2*.amazonaws.com*" pattern="*ec2*.amazonaws.com*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false" />
+                <match enabled="true" name="*ec2*.compute*" pattern="*ec2*.compute*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false" />
+                <match enabled="true" name="10.*" pattern="http://10.*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false" />
+                <match enabled="true" name="*10*.amazonaws.com*" pattern="*10*.amazonaws.com*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false" />
+                <match enabled="true" name="*10*.compute*" pattern="*10*.compute*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false" />
+                <match enabled="true" name="*.compute.internal*" pattern="*.compute.internal*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false" />
+                <match enabled="true" name="*.ec2.internal*" pattern="*.ec2.internal*" isRegEx="false" isBlackList="false" isMultiLine="false" caseSensitive="false" fromSubscription="false" />
+            </matches>
+            <manualconf host="localhost" port="8157" socksversion="5" isSocks="true" username="" password="" domain="" />
+        </proxy>
+    </proxies>
+</foxyproxy> 
+
+```
+
+3. Click the FoxyProxy icon in the toolbar and select Options.  Click File > Import Settings.  Browse to foxyproxy-settings.xml, select it, and click Open.  To confirm that you wish to overwrite current settings with those stored in the new file, click Yes.
+4. Beside the FoxyProxy Standard add-on, click Options.  In the FoxyProxy Standard dialog, for Select Mode, choose Use proxies based on their predefined patterns and priorities.
+
+You can now connect to your instance from your browser by typing its address in the FireFox/Chrome URL bar. The list of the ports are available ["Here"](http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-web-interfaces.html).
+
+
 
 > The job tracker enables you to see what MapReduce jobs are executing in
 > your cluster and the details on the number of maps and reduces that are
