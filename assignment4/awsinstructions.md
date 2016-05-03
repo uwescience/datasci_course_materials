@@ -146,7 +146,7 @@ the tunnel over which proxied traffic will run.
 3. Click the FoxyProxy icon in the toolbar and select Options.  Click File > Import Settings.  Browse to foxyproxy-settings.xml, select it, and click Open.  To confirm that you wish to overwrite current settings with those stored in the new file, click Yes.
 4. Beside the FoxyProxy Standard add-on, click Options.  In the FoxyProxy Standard dialog, for Select Mode, choose Use proxies based on their predefined patterns and priorities.
 
-You can now connect to your instance from your browser by typing its address in the FireFox/Chrome URL bar. The list of the ports are available ["Here"](http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-web-interfaces.html).
+You can now connect to your instance from your browser by typing its address in the FireFox/Chrome URL bar. The list of the ports are available [here](http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-web-interfaces.html).
 
 
 
