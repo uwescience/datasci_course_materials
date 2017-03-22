@@ -159,7 +159,7 @@ $ python friend_count.py friends.json
 
 <h2 class="c2"><a name="h.atam3upnj7wp"></a><span>Reduce Output</span></h2>
 
-<p class="c2"><span>The output should be all pairs (friend, person) such that (person, friend) appears in the dataset but (friend, person) does not.</p>
+<p class="c2"><span>The output should be the full symmetric relation.  For every pair (person, friend), you will emit BOTH (person, friend) AND (friend, person).  However, be aware that (friend, person) may already appear in the dataset, so you may produce duplicates if you are not careful.</p>
 
 <p class="c2"><span>You can test your solution to this problem using friends.json:</span></p>
 
