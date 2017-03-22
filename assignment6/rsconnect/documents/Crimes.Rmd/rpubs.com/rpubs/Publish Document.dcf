@@ -1,0 +1,7 @@
+name: Publish Document
+account: rpubs
+server: rpubs.com
+bundleId:
+        https://api.rpubs.com/api/v1/document/131997/0d0da8e2e00d447696b9246a94e2622b
+url: http://rpubs.com/rdsn/131997
+when: 1448913099.30071
