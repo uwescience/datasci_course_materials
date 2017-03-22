@@ -58,4 +58,7 @@ def fetchsamples():
     print line.strip()
 
 if __name__ == '__main__':
-  fetchsamples()
+  fetchsamples() 
+  
+  
+  
