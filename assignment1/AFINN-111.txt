@@ -337,7 +337,6 @@ calm	2
 calmed	2
 calming	2
 calms	2
-can't stand	-3
 cancel	-1
 cancelled	-1
 cancelling	-1
@@ -351,7 +350,6 @@ careful	2
 carefully	2
 careless	-2
 cares	2
-cashing in	-2
 casualty	-2
 catastrophe	-3
 catastrophic	-4
@@ -498,7 +496,6 @@ convinced	1
 convinces	1
 convivial	2
 cool	1
-cool stuff	3
 cornered	-2
 corpse	-1
 costly	-2
@@ -759,9 +756,7 @@ dithering	-2
 dizzy	-1
 dodging	-2
 dodgy	-2
-does not work	-3
 dolorous	-2
-dont like	-2
 doom	-2
 doomed	-2
 doubt	-1
@@ -976,7 +971,6 @@ fearful	-2
 fearing	-2
 fearless	2
 fearsome	-2
-fed up	-3
 feeble	-2
 feeling	1
 felonies	-3
@@ -1106,8 +1100,6 @@ greater	3
 greatest	3
 greed	-3
 greedy	-2
-green wash	-3
-green washing	-3
 greenwash	-3
 greenwasher	-3
 greenwashers	-3
@@ -1514,7 +1506,6 @@ mercy	2
 merry	3
 mess	-2
 messed	-2
-messing up	-2
 methodical	2
 mindless	-2
 miracle	4
@@ -1603,14 +1594,11 @@ nifty	2
 niggas	-5
 nigger	-5
 no	-1
-no fun	-3
 noble	2
 noisy	-1
 nonsense	-2
 noob	-2
 nosey	-2
-not good	-2
-not working	-3
 notorious	-2
 novel	2
 numb	-1
@@ -1919,7 +1907,6 @@ rich	2
 ridiculous	-3
 rig	-1
 rigged	-1
-right direction	3
 rigorous	3
 rigorously	3
 riot	-2
@@ -1977,7 +1964,6 @@ screamed	-2
 screaming	-2
 screams	-2
 screwed	-2
-screwed up	-3
 scumbag	-4
 secure	2
 secured	2
@@ -2071,7 +2057,6 @@ solved	1
 solves	1
 solving	1
 somber	-2
-some kind	0
 son-of-a-bitch	-5
 soothe	3
 soothed	3
