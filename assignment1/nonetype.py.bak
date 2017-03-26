@@ -1,0 +1,6 @@
+v = { 'key' : None }
+
+if v['key']:
+	print 'it is not none: ' + str(v['key'])
+else:
+	print 'it is none'

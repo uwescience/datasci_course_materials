@@ -1,0 +1,5 @@
+﻿abandon	-3
+abandon	-2
+ivanov	10
+george	1
+wow	-2

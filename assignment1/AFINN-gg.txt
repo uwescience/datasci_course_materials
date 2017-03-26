@@ -1,0 +1,3 @@
+﻿ivanov	1
+george	3
+wow	2
