@@ -26,7 +26,7 @@ The quiz should cost no more than 5-10 dollars if you only use small aws instanc
 
 ## **Useful Links**
 
-[Pig Latin reference](http://pig.apache.org/docs/r0.7.0/piglatin_ref2.html)
+[Pig Latin reference](http://pig.apache.org/docs/r0.17.0/basic.html)
 
 [Counting rows in an alias](http://stackoverflow.com/questions/9900761/pig-how-to-count-a-number-of-rows-in-alias)
 
