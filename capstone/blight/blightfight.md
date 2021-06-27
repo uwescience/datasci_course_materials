@@ -35,7 +35,9 @@ Some articles you may find useful:
 * [The relationship between abandonment and crime](readings/RALEIGH_et_al-2015-Journal_of_Urban_Affairs.pdf)
 * [Detroit demolishes its ruins: 'The capitalists will take care of the rest'](http://www.theguardian.com/money/2014/sep/28/detroit-demolish-ruins-capitalists-abandoned-buildings-plan)
 
-### Discussion Prompt: Share your background, interest, and goals for this Capstone Project, and any questions or considerations from your domain research.  How important is this problem?  How accurate do you think the models will be?  What kinds of concerns might there be around equity?  For example, in some cities, 311 calls may be rare in poor neighborhoods, so a model that predicts abandonment that uses 311 calls may favor certain neighborhoods over others. 
+### Discussion Prompt: 
+
+Share your background, interest, and goals for this Capstone Project, and any questions or considerations from your domain research.  How important is this problem?  How accurate do you think the models will be?  What kinds of concerns might there be around equity?  For example, in some cities, 311 calls may be rare in poor neighborhoods, so a model that predicts abandonment that uses 311 calls may favor certain neighborhoods over others. 
 
 
 ## Week 2. Create a list of "buildings" from a list of geo-located incidents
